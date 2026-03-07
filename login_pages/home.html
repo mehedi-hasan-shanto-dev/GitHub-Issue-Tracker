@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="shortcut icon"
+      href="/assests/github-logo.png"
+      type="image/x-icon"
+    />
+    <title>GitHub Issue Tracker</title>
+  </head>
+  <body>
+    <!-- header -->
+    <header class="bg-white">
+      <section
+        class="max-w-11/12 mx-auto md:flex space-y-5 md:space-y-0 justify-between py-6"
+      >
+        <a href="/pages/home.html" class="flex items-center gap-1">
+          <img src="/assests/github-logo.png" class="w-9" alt="" />
+          <p class="font-bold">GitHub Issues Tracker</p>
+        </a>
+        <!-- search -->
+        <div class="join">
+          <div>
+            <label class="input validator join-item">
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="search"
+                class="focus:outline-0"
+                required
+              />
+            </label>
+          </div>
+          <button
+            id="searchBtn"
+            onclick="handleSearch()"
+            class="btn btn-primary join-item"
+          >
+            Search
+          </button>
+        </div>
+      </section>
+    </header>
+
+    <script src="/script/script.js"></script>
+  </body>
+</html>
