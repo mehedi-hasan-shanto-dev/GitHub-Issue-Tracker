@@ -7,7 +7,7 @@ const btnSubmit = () => {
   const inputPassword = password.value;
 
   if (inputUserName === "admin" && inputPassword === "admin123") {
-    window.location.assign("/login_pages/home.html");
+    window.location.assign("./login_pages/home.html");
   } else {
     alert("Wrong Credentials");
   }
