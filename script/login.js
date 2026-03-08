@@ -1,7 +1,6 @@
 const userName = document.getElementById("userName");
 const password = document.getElementById("password");
 
-// step-1: login Functionality
 const btnSubmit = () => {
   const inputUserName = userName.value;
   const inputPassword = password.value;
