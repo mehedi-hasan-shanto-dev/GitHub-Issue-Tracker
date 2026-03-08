@@ -1,4 +1,4 @@
-// script.js (GitHub Pages Compatible)
+// script.js (GitHub Pages Compatible + Priority Colors)
 
 const issueContainer = document.getElementById("issueContainer");
 const buttonContainer = document.getElementById("buttonContainer");
@@ -28,9 +28,7 @@ let allIssues = [];
 const loadAllIssue = async () => {
   try {
     loadingOn();
-    const res = await fetch(
-      "https://phi-lab-server.vercel.app/api/v1/lab/issues",
-    );
+    const res = await fetch("https://phi-lab-server.vercel.app/api/v1/lab/issues");
     const data = await res.json();
     allIssues = data.data;
     displayIssue(allIssues);
@@ -54,10 +52,7 @@ const filteredIssuesByStatus = (status) => {
 // Counter
 const totalCount = document.getElementById("totalCount");
 const counter = (status) => {
-  let count =
-    status === "all"
-      ? allIssues.length
-      : allIssues.filter((issue) => issue.status === status).length;
+  let count = status === "all" ? allIssues.length : allIssues.filter((issue) => issue.status === status).length;
   totalCount.innerText = count;
 };
 
@@ -67,33 +62,40 @@ const displayIssue = (issues) => {
 
   issues.forEach((issue) => {
     const newDiv = document.createElement("div");
-    newDiv.className = "mb-5";
 
-    // Determine border color
-    const borderColor =
-      issue.status === "open" ? "border-green-500" : "border-purple-600";
+    // Priority colors logic
+    let priorityBorder = "";
+    let priorityColor = "";
+    switch(issue.priority.toLowerCase()) {
+      case "high":
+        priorityBorder = "border-red-500";
+        priorityColor = "bg-red-100 text-red-600";
+        break;
+      case "medium":
+        priorityBorder = "border-amber-500";
+        priorityColor = "bg-amber-100 text-amber-600";
+        break;
+      case "low":
+        priorityBorder = "border-green-500";
+        priorityColor = "bg-green-100 text-green-600";
+        break;
+      default:
+        priorityBorder = "border-gray-300";
+        priorityColor = "bg-gray-100 text-gray-600";
+    }
 
-    // Determine image path
-    const imgSrc =
-      issue.status === "open"
-        ? "../assets/Open-Status.png"
-        : "../assets/Closed-Status.png";
-
-    // Labels with fallback
+    // Labels fallback
     const label1 = issue.labels[0] ?? "-";
     const label2 = issue.labels[1] ?? "-";
 
-    // Display
     newDiv.innerHTML = `
-      <div onclick="loadModals(${issue.id})" class="max-w-sm bg-white border-0 border-t-4 mt-3 h-full flex flex-col justify-between rounded-xl shadow-sm overflow-hidden w-full ${borderColor}">
+      <div onclick="loadModals(${issue.id})" class="max-w-sm bg-white border-0 border-t-4 mt-3 h-full flex flex-col justify-between rounded-xl shadow-sm overflow-hidden w-full ${priorityBorder}">
         <div class="p-5">
           <div class="flex justify-between items-start mb-4">
-            <div><img src="${imgSrc}" alt=""></div>
-            <span class="px-5 py-1 text-xs font-bold tracking-widest rounded-full uppercase ${
-              issue.priority === "high"
-                ? "bg-red-100 text-red-600"
-                : "text-[#F59E0B] bg-amber-100"
-            }">${issue.priority}</span>
+            <div><img src="${issue.status === "open" ? '../assets/Open-Status.png' : '../assets/Closed-Status.png'}" alt=""></div>
+            <span class="px-5 py-1 text-xs font-bold tracking-widest rounded-full uppercase ${priorityColor}">
+              ${issue.priority}
+            </span>
           </div>
 
           <h3 class="text-xl font-bold text-slate-800 leading-tight mb-2">${issue.title}</h3>
@@ -101,14 +103,10 @@ const displayIssue = (issues) => {
 
           <div class="flex gap-2 mb-4">
             <span class="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-full uppercase ${
-              label1.toLowerCase() === "enhancement"
-                ? "bg-green-50 text-green-500"
-                : "bg-red-50 text-red-500"
+              label1.toLowerCase() === "enhancement" ? "bg-green-50 text-green-500" : "bg-red-50 text-red-500"
             }">${label1}</span>
             <span class="inline-flex items-center gap-1 px-3 py-1 border border-orange-100 text-sm font-medium uppercase rounded-full ${
-              label2.toLowerCase() === "enhancement"
-                ? "bg-green-50 text-green-500"
-                : "bg-orange-50 text-orange-600"
+              label2.toLowerCase() === "enhancement" ? "bg-green-50 text-green-500" : "bg-orange-50 text-orange-600"
             }">${label2}</span>
           </div>
         </div>
@@ -129,9 +127,7 @@ const displayIssue = (issues) => {
 // Modal functions
 const loadModals = async (issueId) => {
   try {
-    const res = await fetch(
-      `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`,
-    );
+    const res = await fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`);
     const data = await res.json();
     displayModals(data.data);
   } catch (error) {
@@ -142,6 +138,22 @@ const loadModals = async (issueId) => {
 
 const displayModals = (issue) => {
   my_modal_5.innerHTML = "";
+
+  // Priority colors logic
+  let priorityColor = "";
+  switch(issue.priority.toLowerCase()) {
+    case "high":
+      priorityColor = "bg-red-100 text-red-600";
+      break;
+    case "medium":
+      priorityColor = "bg-amber-100 text-amber-600";
+      break;
+    case "low":
+      priorityColor = "bg-green-100 text-green-600";
+      break;
+    default:
+      priorityColor = "bg-gray-100 text-gray-600";
+  }
 
   const label1 = issue.labels[0] ?? "-";
   const label2 = issue.labels[1] ?? "-";
@@ -162,14 +174,10 @@ const displayModals = (issue) => {
 
         <div class="flex gap-2 mb-8">
           <p class="border px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 ${
-            label1.toLowerCase() === "enhancement"
-              ? "bg-green-50 text-green-500"
-              : "bg-red-50 text-red-500"
+            label1.toLowerCase() === "enhancement" ? "bg-green-50 text-green-500" : "bg-red-50 text-red-500"
           }">${label1}</p>
           <p class="bg-amber-50 text-amber-500 border border-amber-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 ${
-            label2.toLowerCase() === "enhancement"
-              ? "bg-green-50 text-green-500"
-              : "bg-orange-50 text-orange-600"
+            label2.toLowerCase() === "enhancement" ? "bg-green-50 text-green-500" : "bg-orange-50 text-orange-600"
           }">${label2}</p>
         </div>
 
@@ -182,11 +190,7 @@ const displayModals = (issue) => {
           </div>
           <div class="text-center">
             <p class="text-slate-400 text-sm mb-1">Priority:</p>
-            <p class="mt-1 px-5 py-1.5 rounded-sm text-sm font-bold ${
-              issue.priority === "high"
-                ? "bg-red-100 text-red-600"
-                : "text-[#e08f03] bg-amber-100"
-            }">${issue.priority}</p>
+            <p class="mt-1 px-5 py-1.5 rounded-sm text-sm font-bold ${priorityColor}">${issue.priority}</p>
           </div>
         </div>
       </div>
@@ -210,9 +214,7 @@ const handleSearch = async () => {
 
   try {
     loadingOn();
-    const res = await fetch(
-      `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchInputValue}`,
-    );
+    const res = await fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchInputValue}`);
     const data = await res.json();
     displayIssue(data.data);
     totalCount.innerText = data.data.length;
